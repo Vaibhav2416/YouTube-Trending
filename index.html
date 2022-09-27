@@ -1,0 +1,184 @@
+<!-- AIzaSyCQjmYNJlRYiBiei61PzHKTlbDVjl6cj0Q -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>Document</title>
+
+    <style>
+        #results{
+            display: grid;
+            grid-template-columns: repeat(4,22%);
+            height: auto;
+            gap: 20px;
+            padding: 20px;
+            justify-content: space-between;
+        }
+        #sleep{
+            cursor: pointer;
+        }
+        img{
+            width: 100%;
+            height: 220px;
+        }
+        input{
+            height: 40px;
+            width: 500px;
+            border-radius: 20px;
+            padding-left: 20px;
+
+        }
+        input::placeholder{
+            text-align: center;
+        }
+        button{
+            height: 40px;
+            width: 120px;
+            background-color: whitesmoke;
+            font-size: 20px;
+            text-align: center;
+            border-radius: 10px;
+            border: 3px solid red;
+        }
+        #main{
+            height: 80px;
+            background-color: lightgoldenrodyellow;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+        button:hover{
+            background-color: antiquewhite;
+        }
+        h1{
+            text-align: left;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+    <h1>Youtube</h1>
+   <input type="text" id="query" placeholder="Enter A Movie Name">
+   <button class="fa fa-search" onclick="search()">Search</button> 
+</div>
+   <div id="results"></div>
+</body>
+</html>
+<script>
+const api_key="AIzaSyAOp5TDA3aUK4LYZqiwUMo8riNPMDrdDKw"
+
+/* <iframe width="560" height="315"
+ src="https://www.youtube.com/embed/GbiP2YnDt3A" 
+ title="YouTube video player" 
+ frameborder="0" 
+ allow="accelerometer;
+  autoplay; 
+  clipboard-write; 
+  encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>*/
+async function you(query){
+try {
+    let url=`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${query}&key=${api_key}`
+    console.log(url)
+    let res=await fetch(url)
+    let data=await res.json()
+    
+    return data.items
+} catch (error) {
+    
+}
+}
+
+appendYou=(data)=>{
+    let container=document.getElementById("results")
+    container.innerHTML=""
+
+    data.forEach(({id: { videoId }, snippet: { title,thumbnails }}) => {
+        console.log(videoId)
+        console.log(title);
+    let div=document.createElement("div")
+    div.setAttribute("id","sleep")    
+
+    let image=document.createElement("img")
+    image.src=thumbnails.default.url
+    let iframe=document.createElement("iframe");
+    iframe.src=`https://www.youtube.com/embed/${videoId}`
+    iframe.allow="fullscreen"
+    let h3=document.createElement("h3")
+    h3.innerText=title
+
+    div.append(image,h3)
+
+    container.append(div)
+    let video={
+        title,
+        videoId,
+    }
+    
+    div.onclick=()=>{
+        playVideo(video)
+    }
+    });
+}
+
+
+let playVideo = (video) => {
+    console.log("triggered");
+    
+    localStorage.setItem("products",JSON.stringify(video))
+     window.location.href="maxYoutubeData.html"
+    
+}
+
+
+
+
+
+async function search(){
+    let query=document.getElementById("query").value;
+    // console.log(query);
+    let dope=await you(query)
+    // console.log(dope);
+    appendYou(dope)
+}
+yesData=async()=>{
+try {
+    let ur=`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=trending&regionCode=IN&maxResults=20&key=${api_key}`
+
+    let res=await fetch(ur)
+    let dta=await res.json()
+
+    appenData(dta.items)
+    console.log(dta.items)
+} catch (error) {
+    
+}
+}
+yesData()
+
+appenData=(data)=>{
+    let trim=document.getElementById("results")
+    data.forEach(({id: { videoId }, snippet: { title,thumbnails }}) => { 
+    let div=document.createElement("div")
+    div.setAttribute("id","sleep")    
+
+    // let image=document.createElement("img")
+    // image.src=thumbnails.default.url
+    let iframe=document.createElement("iframe");
+    iframe.src=`https://www.youtube.com/embed/${videoId}`
+    iframe.allow="fullscreen"
+    let h3=document.createElement("h3")
+    h3.innerText=title
+
+    div.append(iframe,h3) 
+    trim.append(div)
+    });
+}
+
+
+</script>
